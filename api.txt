@@ -352,8 +352,41 @@
 
                 |---------------------------------------------------------------------------------------------------------------------------------------- |
                 
-                    A.   XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
-                    B.   XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+                    1. Aqui eliminamos la base de datos con nombre db_node solamnete si existe anteriormente
+                    2. En esta linea creamos un esquema o base de datos y le damos una regla de caracteres "utf8".
+                    3. Aqui usamos o la base de datos que acabamos de crear
+                    4. CREATE TABLE users (
+                            id INT AUTO_INCREMENT PRIMARY KEY,
+                            name VARCHAR(100) NOT NULL,
+                            lastname VARCHAR(100) NOT NULL,
+                            email VARCHAR(150) NOT NULL UNIQUE,
+                            password VARCHAR(255) NOT NULL,
+                            phone VARCHAR(20),
+                            image VARCHAR(255),
+                            role VARCHAR(20),
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                         ) ENGINE=InnoDB;
+                    
+                    Aqui creamos una nueva tabla en nuestra base de datos node_db a la cúal le ponemos el nombre de users "usuarios"
+                    dentro de esta también crearemos las columnas correspondientes a esta tabla, columnas tales como, id, nombre, apellido
+                    correo, contraseña, telefono, imagen, rol, fecha de creacion y fecha de autorización
+
+                    5. INSERT INTO users VALUES (
+                            null,
+                            "Albeiro",
+                            "Ramos",
+                            "profealbeiro2020@gmail.com",
+                            "$2b$10$NR8eRuuAB12JoHe81ZYnG.i2/5k/D5TKrxc7Pk74W4rgzADdABM9G",
+                            "3103103101",
+                            "profile",
+                            "admin",
+                            null,
+                            null
+                         );
+
+                    Aqui insertamos una fila de datos dentro de la tabla usuarios, con su respectivo orden de columnas.
+
                 |                                                                                                                                         |
                 └ --------------------------------------------------------------------------------------------------------------------------------------- ┘
 
@@ -402,10 +435,13 @@
                     el host, el usuario, la contraseña, el nombre de la base de datos y el puerto que esta usa 
                     además guardamos la firma que damos al jwt para autorizar cualquier acción.
 
+                    1. DB_HOST para el host que usa la base de datos
+                    2. DB_USER para el usuario que vamos a usar para conectarnos a la base de datos
+                    3. DB_PASSWORD para la contraseña de la base de DATOS
+                    4. DB_NAME para el nombre de la base de datos.
+                    5. DB_PORT para el puerto en el que nuestra base de datos puede ser encontrada
+
                 |---------------------------------------------------------------------------------------------------------------------------------------- |
-                
-                    A.   XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
-                    B.   XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
                 |                                                                                                                                         |
                 └ --------------------------------------------------------------------------------------------------------------------------------------- ┘
 
@@ -432,7 +468,7 @@
                 |                                                                                                                                         |
                   EXPLICACIÓN:   
                     
-                    ⦿  aqui usamos las variables que declaramos antes, las usamos para conectar o configurar la conexion a la base de datos,
+                    ⦿  aqui usamos las variables de entorno que declaramos antes, las usamos para conectar o configurar la conexion a la base de datos,
                     al inicio importamos la libreria dotenv y también la libreria de mysql despues comenzamos a crear la conexion con
                     mysql.createConnection y dentro le damos el contexto o las variables de entorno que va a usar, acto seguido declaramos que si la 
                     conexion no se hace nos devuelva un error, si no da un mensaje en la consolo declarando que la conexion fue exitosa y ademas Exportamos
@@ -440,8 +476,26 @@
 
                 |---------------------------------------------------------------------------------------------------------------------------------------- |
                 
-                    A.   XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
-                    B.   XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+                    1. Importamos la funcion config de la libreria dotenv.
+                    2. Importamos la libreria mysql
+                    3. const db = mysql.createConnection({
+                            host: process.env.DB_HOST,
+                            user: process.env.DB_USER,
+                            password: process.env.DB_PASSWORD,
+                            database: process.env.DB_NAME,
+                            port: process.env.DB_PORT
+                        });
+                    Aqui creamos nuestra conexión a nuestra base de datos haciendo uso de las variables de entorno que hemos declarado antes en el .env
+                    usamos una funcion de la libreria mysql llamada createConnection a la cúal le pasamos un objeto con cada valor que necesita usando claves y valores
+                    4.  db.connect(function(err) {
+                            if (err) throw err;
+                            console.log('Base de datos conectada')
+                        });
+                    Aqui utilizamos toda la conexion que hicimos y utlizamos una funcion de la libreria llamada connect para Comprobar
+                    si establecio la conexion con la base de datos y establecemos que si existe un error nos envie el error y
+                    si la conexion pudo ser establecida nos indica mediante la consola que se pudo conectar
+                    5. module.exports = db;
+                    Aqui exportamos nuestra conexión con la base de datos para poder ser usada en cualquier lugar
                 |                                                                                                                                         |
                 └ --------------------------------------------------------------------------------------------------------------------------------------- ┘
 
@@ -604,12 +658,130 @@
                 |                                                                                                                                         |
                   EXPLICACIÓN:   
                     
-                    ⦿  XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+                    ⦿  .
 
                 |---------------------------------------------------------------------------------------------------------------------------------------- |
                 
-                    A.   XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
-                    B.   XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+                    1. Aqui importamos la conexion a la base de datos del archivo config dentro de la carpeta config.
+                    2. Aqui importamos la libreria de bcrypt
+                    3. Aqui creamos un objeto llamado users
+
+
+                    User.findAll = (result) => {
+                        const sql = `SELECT id, email, name, lastname, phone, image, role, created_at, updated_at FROM users`;
+                        db.query(sql, (err, users) => {
+                            if (err) {
+                                console.log('Error al listar usuarios: ', err);
+                                result(err, null);
+                            } else {
+                                console.log('Usuarios encontrados: ', users.length);
+                                result(null, users);
+                            }
+                        });
+                    };
+                    5. Aqui creamos una nueva arrow function llamada findAll "Buscar Todos" que recibe como parametro result
+                    6. Seguido dentro declaramos una nueva constante llamada sql que dentro almacena codigo sql,además almacena una petición a la
+                    tabla usuarios de la cúal traemos todos sus datos
+                    7. Aqui usamos una función llamada query la cúal tiene 3 parametros como sql la query declarada anteriormente, err "error y
+                    users que seria el resultado de la petición.
+                    8, 9. Aqui decimos que si existe un error o el parametro error tiene un valor truthy enviemos un mensaje a la consola donde digamos
+                    "Error al listar usuarios" y además el error que hubo.
+                    10. Y almacenamos en result el error y null
+                    11, 12. Si no existe un error entonces enviamos un mensaje a la consola donde decimos "Usuarios encontrados" y tambien la longitud de objetos que me devolvio la query
+                    para poder saber la cantidad de usuarios que retorno la query
+                    13. y Almacenamos nuevamente null y el resultado dentro de result.
+
+
+                    User.findById = (id, result) => {
+                        const sql = `SELECT id, email, name, lastname, image, phone, role, password FROM users WHERE id = ?`;
+                        db.query(sql, [id], (err, user) => {
+                            if (err) {
+                                console.log('Error al consultar: ', err);
+                                result(err, null);
+                            }
+                            else {
+                                console.log('Usuario consultado: ',  user[0] );
+                                result(null, user[0]);
+                            }
+                        });
+                    };
+                    18. Aqui creamos una nueva arrow function llamada findById "Buscar por Id" que recibe como parametro id y result.
+                    19. Aqui declaramos una constante llamada sql donde almacenamos una query a la base de datos usando "?" como un placeholder o indice de donde almacenar el id
+                    20. Aqui usamos la función query que recibe cmo parametro sql la petición, un array [id], error y user.
+                    21, 22. Aqui decimos que si existe un error o el parametro error tiene un valor truthy enviemos un mensaje a la consola donde digamos
+                    "Error al consultar" y además el error que hubo.
+                    23. Aqui almacenamos el error y null dentro de result.
+                    25, 26. Si no existe un error entonces enviamos un mensaje a la consola donde decimos "Usuarios consultado" y tambien el valor del primer elemento dentro del array user que me devolvio la query
+                    27. Aqui almacenamos null y el primer valor de al array user.
+
+                    User.findByEmail = (email, result) => {
+                        const sql = `SELECT id, email, name, lastname, image, phone, role, password FROM users WHERE email = ?`;
+                        db.query(sql, [email], (err, user) => {
+                            if (err) {
+                                console.log('Error al consultar: ', err);
+                                result(err, null);
+                            }
+                            else {
+                                console.log('Usuario consultado: ',  user[0] );
+                                result(null, user[0]);
+                            }
+                        });
+                    };
+
+                    32. Aqui creamos una nueva función llamada findByEmail "Buscar por correo electronico" que recibe como parametro email y result
+                    33. Aqui declaramos una nueva constante llamada sql que almacena una petición a la base de datos nuevamente usando "?" como un placeholder
+                    está petición trae id, email, name, lastname, image, phone, role, password del usuario con el id que le asignemos.
+                    34. Aqui usamos la función que recibe como parametro la petición, el array [email], error y user.
+                    35, 36. Aqui decimos que si existe un error o el parametro error tiene un valor truthy enviemos un mensaje a la consola donde digamos
+                    "Error al consultar" y además el error que hubo.
+                    37. Aqui almacenamos dentro de result el error y un valor nulo.
+                    39, 40. Si no existe un error entonces enviamos un mensaje a la consola donde decimos "Usuarios consultado" y tambien el valor del primer 
+                    elemento dentro del array user que vendria siendo un objeto que contiene toda la información del usuario.
+                    41. Aqui almacenamos un valor nulo y el objeto que tiene la información de ese usuario.
+
+                     46     User.create = async (user, result) => {
+                     47         const hash = await bcrypt.hash(user.password, 10)  
+                     48         const validRoles = ['admin', 'seller', 'customer', 'user'];
+                     49         const role = validRoles.includes(user.role) ? user.role : 'user';
+                     50         const sql = `INSERT INTO users(
+                     51                         name, 
+                     52                         lastname,
+                     53                         email, 
+                     54                         password,
+                     55                         phone,
+                     56                         image,
+                     57                         role,
+                     58                         created_at,
+                     59                         updated_at
+                     60                     ) VALUES (?,?,?,?,?,?,?,?,?)`;
+                     61         db.query(sql,
+                     62             [
+                     63                 user.name,
+                     64                 user.lastname,
+                     65                 user.email,
+                     66                 hash,
+                     67                 user.phone,
+                     68                 user.image,
+                     69                 role,
+                     70                 new Date(),
+                     71                 new Date()
+                     72             ], (err, res) => {
+                     73                 if (err) {
+                     74                     console.log('Error al crear al Usuario: ', err);
+                     75                     result(err, null);
+                     76                 } else {
+                     77                     console.log('Usuario creado: ', {id: res.insertId, ...user});
+                     78                     result(null, {id: res.insertId, ...user});
+                     79                 }
+                     80             }
+                     81         );
+                     82     };
+                    
+                    46. Aqui creamos una nueva función llamada create "crear" declaramos que es asincrona usando async lo que significa que va a tomar un tiempo 
+                    en completarse, dentro de esta podemos usar await para indicar que debe esperar a que cierta acción que le demos esté valor se complete además esta recibe como parametro user y result.
+                    47. Aqui creamos una nueva constante llamada hash que indica que debemos esperar que se complete la acción que tiene dentro usando "await", además
+                    llamamos la constante bcrypt y usamos su funcion "hash()" dentro de está le pasamos un parametro llamado user.password  
+
                 |                                                                                                                                         |
                 └ --------------------------------------------------------------------------------------------------------------------------------------- ┘
 
