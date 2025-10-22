@@ -667,18 +667,18 @@
                     3. Aqui creamos un objeto llamado users
 
 
-                    User.findAll = (result) => {
-                        const sql = `SELECT id, email, name, lastname, phone, image, role, created_at, updated_at FROM users`;
-                        db.query(sql, (err, users) => {
-                            if (err) {
-                                console.log('Error al listar usuarios: ', err);
-                                result(err, null);
-                            } else {
-                                console.log('Usuarios encontrados: ', users.length);
-                                result(null, users);
-                            }
-                        });
-                    };
+                    ⦿  User.findAll = (result) => {
+                            const sql = `SELECT id, email, name, lastname, phone, image, role, created_at, updated_at FROM users`;
+                            db.query(sql, (err, users) => {
+                                if (err) {
+                                    console.log('Error al listar usuarios: ', err);
+                                    result(err, null);
+                                } else {
+                                    console.log('Usuarios encontrados: ', users.length);
+                                    result(null, users);
+                                }
+                            });
+                        };
                     5. Aqui creamos una nueva arrow function llamada findAll "Buscar Todos" que recibe como parametro result
                     6. Seguido dentro declaramos una nueva constante llamada sql que dentro almacena codigo sql,además almacena una petición a la
                     tabla usuarios de la cúal traemos todos sus datos
@@ -692,19 +692,19 @@
                     13. y Almacenamos nuevamente null y el resultado dentro de result.
 
 
-                    User.findById = (id, result) => {
-                        const sql = `SELECT id, email, name, lastname, image, phone, role, password FROM users WHERE id = ?`;
-                        db.query(sql, [id], (err, user) => {
-                            if (err) {
-                                console.log('Error al consultar: ', err);
-                                result(err, null);
-                            }
-                            else {
-                                console.log('Usuario consultado: ',  user[0] );
-                                result(null, user[0]);
-                            }
-                        });
-                    };
+                    ⦿  User.findById = (id, result) => {
+                            const sql = `SELECT id, email, name, lastname, image, phone, role, password FROM users WHERE id = ?`;
+                            db.query(sql, [id], (err, user) => {
+                                if (err) {
+                                    console.log('Error al consultar: ', err);
+                                    result(err, null);
+                                }
+                                else {
+                                    console.log('Usuario consultado: ',  user[0] );
+                                    result(null, user[0]);
+                                }
+                            });
+                        };
                     18. Aqui creamos una nueva arrow function llamada findById "Buscar por Id" que recibe como parametro id y result.
                     19. Aqui declaramos una constante llamada sql donde almacenamos una query a la base de datos usando "?" como un placeholder o indice de donde almacenar el id
                     20. Aqui usamos la función query que recibe cmo parametro sql la petición, un array [id], error y user.
@@ -714,19 +714,19 @@
                     25, 26. Si no existe un error entonces enviamos un mensaje a la consola donde decimos "Usuarios consultado" y tambien el valor del primer elemento dentro del array user que me devolvio la query
                     27. Aqui almacenamos null y el primer valor de al array user.
 
-                    User.findByEmail = (email, result) => {
-                        const sql = `SELECT id, email, name, lastname, image, phone, role, password FROM users WHERE email = ?`;
-                        db.query(sql, [email], (err, user) => {
-                            if (err) {
-                                console.log('Error al consultar: ', err);
-                                result(err, null);
-                            }
-                            else {
-                                console.log('Usuario consultado: ',  user[0] );
-                                result(null, user[0]);
-                            }
-                        });
-                    };
+                    ⦿  User.findByEmail = (email, result) => {
+                            const sql = `SELECT id, email, name, lastname, image, phone, role, password FROM users WHERE email = ?`;
+                            db.query(sql, [email], (err, user) => {
+                                if (err) {
+                                    console.log('Error al consultar: ', err);
+                                    result(err, null);
+                                }
+                                else {
+                                    console.log('Usuario consultado: ',  user[0] );
+                                    result(null, user[0]);
+                                }
+                            });
+                        };
 
                     32. Aqui creamos una nueva función llamada findByEmail "Buscar por correo electronico" que recibe como parametro email y result
                     33. Aqui declaramos una nueva constante llamada sql que almacena una petición a la base de datos nuevamente usando "?" como un placeholder
@@ -739,48 +739,202 @@
                     elemento dentro del array user que vendria siendo un objeto que contiene toda la información del usuario.
                     41. Aqui almacenamos un valor nulo y el objeto que tiene la información de ese usuario.
 
-                     46     User.create = async (user, result) => {
-                     47         const hash = await bcrypt.hash(user.password, 10)  
-                     48         const validRoles = ['admin', 'seller', 'customer', 'user'];
-                     49         const role = validRoles.includes(user.role) ? user.role : 'user';
-                     50         const sql = `INSERT INTO users(
-                     51                         name, 
-                     52                         lastname,
-                     53                         email, 
-                     54                         password,
-                     55                         phone,
-                     56                         image,
-                     57                         role,
-                     58                         created_at,
-                     59                         updated_at
-                     60                     ) VALUES (?,?,?,?,?,?,?,?,?)`;
-                     61         db.query(sql,
-                     62             [
-                     63                 user.name,
-                     64                 user.lastname,
-                     65                 user.email,
-                     66                 hash,
-                     67                 user.phone,
-                     68                 user.image,
-                     69                 role,
-                     70                 new Date(),
-                     71                 new Date()
-                     72             ], (err, res) => {
-                     73                 if (err) {
-                     74                     console.log('Error al crear al Usuario: ', err);
-                     75                     result(err, null);
-                     76                 } else {
-                     77                     console.log('Usuario creado: ', {id: res.insertId, ...user});
-                     78                     result(null, {id: res.insertId, ...user});
-                     79                 }
-                     80             }
-                     81         );
-                     82     };
+                    ⦿  User.create = async (user, result) => {
+                            const hash = await bcrypt.hash(user.password, 10)  
+                            const validRoles = ['admin', 'seller', 'customer', 'user'];
+                            const role = validRoles.includes(user.role) ? user.role : 'user';
+                            const sql = `INSERT INTO users(
+                                            name, 
+                                            lastname,
+                                            email, 
+                                            password,
+                                            phone,
+                                            image,
+                                            role,
+                                            created_at,
+                                            updated_at
+                                        ) VALUES (?,?,?,?,?,?,?,?,?)`;
+                            db.query(sql,
+                                [
+                                    user.name,
+                                    user.lastname,
+                                    user.email,
+                                    hash,
+                                    user.phone,
+                                    user.image,
+                                    role,
+                                    new Date(),
+                                    new Date()
+                                ], (err, res) => {
+                                    if (err) {
+                                        console.log('Error al crear al Usuario: ', err);
+                                        result(err, null);
+                                    } else {
+                                        console.log('Usuario creado: ', {id: res.insertId, ...user});
+                                        result(null, {id: res.insertId, ...user});
+                                    }
+                                }
+                            );
+                        };
                     
                     46. Aqui creamos una nueva función llamada create "crear" declaramos que es asincrona usando async lo que significa que va a tomar un tiempo 
                     en completarse, dentro de esta podemos usar await para indicar que debe esperar a que cierta acción que le demos esté valor se complete además esta recibe como parametro user y result.
                     47. Aqui creamos una nueva constante llamada hash que indica que debemos esperar que se complete la acción que tiene dentro usando "await", además
-                    llamamos la constante bcrypt y usamos su funcion "hash()" dentro de está le pasamos un parametro llamado user.password  
+                    llamamos la constante bcrypt y usamos su funcion "hash()" dentro de está le pasamos un parametro llamado user.password y el número de rondas de trabajo
+                    o rondas de hash aplicadas para dificultar los ataques y etc.
+                    48. Aqui creamos un array llamado ValidRoles o "Roles Validos" y dentro almacenamos cadenas de texto que contienen cada uno de los roles que manejamos en la base de datos.
+                    49. Aqui creamos una nueva constante llamada role a la cúal le asignamos un valor que antes validamos si esta dentro del array de ValidRoles y si no esta dentro de ese array lo que es
+                    usar un operador ternario para indicarle que el valor de role ser "user"
+                    50, 51, 52, 53, 54, 55, 56, 57, 58,
+                    59, 60. Aqui creamos una nueva constante donde nuevamente almacenamos una petición a la base de datos donde indicamos que vamos a insertar en la tabla usuarios en las diferentes columnas que tiene
+                    y además le pasamos los valores dentro de "VALUES()" usando "?" como un placeholder o indice de donde va a poner cada dato que le pasemos.
+                    61. Aqui usamos nuevamente la conexion a la base de datos que hicimos anteriormente y además una función llamada query a la cual le pasamos como parametros la petición que hemos creado antes
+                    62, 63, 64, 65, 66, 67, 68, 69, 70, 71. Y también un array con los valores que va a insertar como nombre, apellido, correo, contraseña pero esta vez hasheada , telefono, imagen, rol y ahora le pasamos en los dos siguientes campos una función de js que se llama Date() 
+                    la cúal lo que se hace es enviar la fecha actual osea el valor de esos campos seria algo parecido a esto "2025-10-22T18:08:05.145Z".
+                    72. También le pasamos otro parametro (err = "error", null) => {} esto seria una funcion anonima osea que solo existe en este pedacito de codigo
+                    73, 74. Aqui validamos si el valor de err es truthy, si este este es true o tiene alguna cadena o algo dentro nos devolvera un mensaje en la consola que dice "Error al crear al usuario" y el error
+                    75. Aqui almacenamos dentro de result el error y null
+                    76, 77. Aqui decimos que si no existe un error entonces enviamos un mensaje a la consola donde decimos "Usuarios Creado" y devolvemos el id que se le dio en la base de datos y toda la información que insertamos.
+                    78. Aqui almacenamos un valor null y un objeto con el id del usuario que hemos insertado y todos los datos que almacena user usando un spread operator "..." que lo que hace es copiar todos los datos de un objeto y pegarlos dentro de otro
+
+                    ⦿  User.update = async (user, result) => {
+                            let fields = [];
+                            let values = [];
+                    
+                            if (user.password) {
+                                const hash = await bcrypt.hash(user.password, 10);
+                                fields.push("password = ?");
+                                values.push(hash);
+                            }
+                    
+                            if (user.email) {
+                                fields.push("email = ?");
+                                values.push(user.email);
+                            }
+                            if (user.name) {
+                                fields.push("name = ?");
+                                values.push(user.name);
+                            }
+                            if (user.lastname) {
+                                fields.push("lastname = ?");
+                                values.push(user.lastname);
+                            }
+                            if (user.phone) {
+                                fields.push("phone = ?");
+                                values.push(user.phone);
+                            }
+                            if (user.image) {
+                                fields.push("image = ?");
+                                values.push(user.image);
+                            }
+                            if (user.role) {
+                                fields.push("role = ?");
+                                values.push(user.role);
+                            }
+                
+                         fields.push("updated_at = ?");
+                         values.push(new Date());
+                
+                         const sql = `UPDATE users SET ${fields.join(", ")} WHERE id = ?`;
+                         values.push(user.id);
+                124
+                125         db.query(sql, values, (err, res) => {
+                126             if (err) {
+                127                 console.log('Error al actualizar usuario: ', err);
+                128                 result(err, null);
+                129             } else {
+                130                 console.log('Usuario actualizado: ', { id: user.id, ...user });
+                131                 result(null, { id: user.id, ...user });
+                132             }
+                133         });
+                134     };
+                    
+                    84. Aqui creamos una nueva función llamada update "actualizar" declaramos que es asincrona usando async lo que significa que va a tomar un tiempo
+                    en completarse, dentro de esta podemos usar await para indicar que debe esperar a que cierta acción que le demos esté valor se complete además esta recibe como parametro user y result.
+                    85. Aqui creamos un array vacio llamado fields "Campos"
+                    86. Aqui creamos otro array vacio llamado values "Valores"
+
+                    88. Aqui utilizamos un if para validar nuevamente si user.password tiene un valor truthy
+                    89. Si es verdad lo que validamos anteriormente creamos una nueva constante llamada hash que indica que debemos esperar que se complete la acción que tiene dentro usando "await", además
+                    llamamos la libreria bcrypt y usamos su funcion "hash()" dentro de está le pasamos un parametro llamado user.password y el número de rondas de trabajo
+                    o rondas de hash aplicadas para dificultar los ataques y etc.
+                    90. Aqui insertamos dentro de fields el valor de "password = ?" usando la función .push()
+                    91. Aqui insertamos dentro de values el hash que declaramos antes usando la función .push()
+                    94. Aqui utilizamos un if para validar nuevamente si user.email tiene un valor truthy
+                    95. Aqui insertamos dentro de fields el valor de "email = ?" usando la función .push()
+                    96. Aqui insertamos dentro de values "user.email" usando la función .push()
+
+                    98. Aqui utilizamos un if para validar nuevamente si user.name tiene un valor truthy
+                    99. Aqui insertamos dentro de fields el valor de "name = ?" usando la función .push()
+                    100. Aqui insertamos dentro de values "user.name" usando la función .push()
+
+                    102. Aqui utilizamos un if para validar nuevamente si user.lastname tiene un valor truthy
+                    103. Aqui insertamos dentro de fields el valor de "lastname = ?" usando la función .push()
+                    104. Aqui insertamos dentro de values "user.lastname" usando la función .push()
+
+                    106. Aqui utilizamos un if para validar nuevamente si user.phone tiene un valor truthy
+                    107. Aqui insertamos dentro de fields el valor de "phone = ?" usando la función .push()
+                    108. Aqui insertamos dentro de values "user.phone" usando la función .push()
+
+                    110. Aqui utilizamos un if para validar nuevamente si user.image tiene un valor truthy
+                    111. Aqui insertamos dentro de fields el valor de "image = ?" usando la función .push()
+                    112. Aqui insertamos dentro de values "user.image" usando la función .push()
+
+                    114. Aqui utilizamos un if para validar nuevamente si user.role tiene un valor truthy
+                    115. Aqui insertamos dentro de fields el valor de "role = ?" usando la función .push()
+                    116. Aqui insertamos dentro de values "user.role" usando la función .push()
+
+                    119. Aqui insertamos dentro de fields ("updated_at = ?") usando la función .push()
+                    120. Aqui insertamos dentro de values "new Date()" que sería la fecha actual osea algo así "2025-10-22T18:08:05.145Z" usando la función .push()
+
+                    122. Aqui creamos una nueva constante llamada sql que dentro almacena una petición a la base de datos la cúal actualiza los datos de la tabla users usando
+                    "UPDATE" y el nombre de la tabla, también usamos set para decirle que columnas queremos actualizar de esa tabla, estas columnas las traemos de fields usando la función join que lo que hace es juntar todos los nombres de las columnas
+                    en una sola linea, por ejemplo que pase
+                    de esto: 
+                    "const fields = ["name = ?", "email = ?"];" 
+                    
+                    a esto:
+                    "[name = ?, email = ?, age = ?]"
+
+                    Y también usamos el "WHERE id = ?" para decirle a cúal usuario queremos actualizarle esos datos mediante su id además toda está petición solamente se hace si algún dato tiene un valor truthy.
+                    123. Aqui insertamos dentro de values el id del usuario usando la función .push()
+                    125. Aqui usamos la constante db que sería nuestra conexión a la base de datos y además usamos la función query() la cúal tiene los parametros sql que sería la petición, values que sería el array que hemos creado al inicio
+                    y tambien una arrow function anonima.
+                    126, 127. Aqui validamos si el err se cumple y si es asi devolvemos un mensaje en la consola que diga "Error al actualizar usuario" y el error que ocurrio
+                    128. Aqui almacenamos el error dentro de result y un valor null
+                    129. Aqui decimos que si error no tiene un valor truthy entonces enviaremos un mensaje en la consola que diga "Usuario actualizado" y devolvemos el id y toda la información que actualizamos.
+                    
+                    
+
+
+                    ⦿     User.delete = (id, result) => {
+                    137         const sql = `DELETE FROM users WHERE id = ?`;
+                    138         db.query(sql, f, (err, res) => {
+                    139             if (err) {
+                    140                 console.log('Error al eliminar usuario: ', err);
+                    141                 result(err, null);
+                    142             } else {
+                    143                 console.log('Usuario eliminado con id: ', id);
+                    144                 result(null, res);
+                    145             }
+                    146         });
+                    147     };
+                    148
+                    149     module.exports = User;
+
+                    136. Aqui creamos una nueva arrow function con el nombre de delete "eliminar" que recibe como parametro id y result
+                    137. Aqui creamos una nueva constante llamada sql que almacena una petición a la base de datos la cúal dice "DELETE FROM users WHERE id = ?"
+                    usamos DELETE para indicar la acción osea eliminar, despúes le agregamos un FROM para indicarle en que tabla o donde debe eliminar nosotros le pasamos la tabla users
+                    quedando "FROM users" despúes decimos WHERE id = ? que sirve para indicarle el id del usuario al que debe eliminar.
+                    138. Aqui llamamos la constante db que seria nuestra conexion a la base de datos y ademas usamos una funcion llamada query la que cual recibe como paremetros la petición,
+                    un array llamado id y una arrow function anonima.
+                    139, 140. Dentro de la función anonima aqui dentro validamos si error contiene un valor truthy, si es asi enviamos un mensaje a la consola que dice "Error al elimnar usuario" y el error
+                    141. Aqui almacenamos el error y un valor null dentro de result.
+                    142, 143. Aqui decimos que si err no es truthy entonces enviamos un mensjae en la consola que dice "Usuario eliminado con id" y el id del usuario eliminado
+                    144. Aqui almacenamos null y el response o res dentro de result.
+
+                    149. Aqui establecemos que este archivo a exportar el objeto User para poder ser importado y utilizado donde sea.
+
 
                 |                                                                                                                                         |
                 └ --------------------------------------------------------------------------------------------------------------------------------------- ┘
