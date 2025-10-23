@@ -832,22 +832,22 @@
                                 values.push(user.role);
                             }
                 
-                         fields.push("updated_at = ?");
-                         values.push(new Date());
-                
-                         const sql = `UPDATE users SET ${fields.join(", ")} WHERE id = ?`;
-                         values.push(user.id);
-                124
-                125         db.query(sql, values, (err, res) => {
-                126             if (err) {
-                127                 console.log('Error al actualizar usuario: ', err);
-                128                 result(err, null);
-                129             } else {
-                130                 console.log('Usuario actualizado: ', { id: user.id, ...user });
-                131                 result(null, { id: user.id, ...user });
-                132             }
-                133         });
-                134     };
+                            fields.push("updated_at = ?");
+                            values.push(new Date());
+                    
+                            const sql = `UPDATE users SET ${fields.join(", ")} WHERE id = ?`;
+                            values.push(user.id);
+                    
+                            db.query(sql, values, (err, res) => {
+                                if (err) {
+                                    console.log('Error al actualizar usuario: ', err);
+                                    result(err, null);
+                                } else {
+                                    console.log('Usuario actualizado: ', { id: user.id, ...user });
+                                    result(null, { id: user.id, ...user });
+                                }
+                            });
+                        };
                     
                     84. Aqui creamos una nueva función llamada update "actualizar" declaramos que es asincrona usando async lo que significa que va a tomar un tiempo
                     en completarse, dentro de esta podemos usar await para indicar que debe esperar a que cierta acción que le demos esté valor se complete además esta recibe como parametro user y result.
@@ -907,20 +907,20 @@
                     
 
 
-                    ⦿     User.delete = (id, result) => {
-                    137         const sql = `DELETE FROM users WHERE id = ?`;
-                    138         db.query(sql, f, (err, res) => {
-                    139             if (err) {
-                    140                 console.log('Error al eliminar usuario: ', err);
-                    141                 result(err, null);
-                    142             } else {
-                    143                 console.log('Usuario eliminado con id: ', id);
-                    144                 result(null, res);
-                    145             }
-                    146         });
-                    147     };
-                    148
-                    149     module.exports = User;
+                    ⦿  User.delete = (id, result) => {
+                            const sql = `DELETE FROM users WHERE id = ?`;
+                            db.query(sql, f, (err, res) => {
+                                if (err) {
+                                    console.log('Error al eliminar usuario: ', err);
+                                    result(err, null);
+                                } else {
+                                    console.log('Usuario eliminado con id: ', id);
+                                    result(null, res);
+                                }
+                            });
+                        };
+                
+                        module.exports = User;
 
                     136. Aqui creamos una nueva arrow function con el nombre de delete "eliminar" que recibe como parametro id y result
                     137. Aqui creamos una nueva constante llamada sql que almacena una petición a la base de datos la cúal dice "DELETE FROM users WHERE id = ?"
@@ -957,12 +957,15 @@
                 |                                                                                                                                         |
                   EXPLICACIÓN:   
                     
-                    ⦿  XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+                    ⦿  Este modulo sirve para exportar la firma secreta del jsonwebtoken y que no sea necesario utilizar process.env en todas partes si no solo
+                    una variable.
 
                 |---------------------------------------------------------------------------------------------------------------------------------------- |
                 
-                    A.   XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
-                    B.   XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+                    1. Aqui importamos la libreria dotenv y usamos una función config de esa misma libreria.
+                    3. Y aqui exportamos un objeto que contiene una llave llamada secretOrKey
+                    4. esta llave lo que hace es traer y almacenar una variable de entorno llamada
+                    JWT_SECRET usando process.env.JWT_SECRET.
                 |                                                                                                                                         |
                 └ --------------------------------------------------------------------------------------------------------------------------------------- ┘
                     
@@ -1005,8 +1008,25 @@
 
                 |---------------------------------------------------------------------------------------------------------------------------------------- |
                 
-                    A.   XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
-                    B.   XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+                    1. Importamos la libreria passport-jwt y la almacenamos en una constante llamada JwtStrategy y además usamos la funcion Strategy de esta misma libreria.
+                    2. Importamos la libreria passport-jwt y la almacenamos en una constante llamada ExtractJwt y además usamos la función ExtractJwt de esta misma libreria.
+                    3. Importamos la libreria passport y la almacenamos en una constante llamada passport.
+                    4. Importamos el modulo de Keys y la almacenamos en la constante Keys.
+                    5. Importamos el archivo user dentro de models el cúal exporta un objeto User que seria lo que almacenamos aqui en la variable User.
+                    7. Creamos una nueva constante llamada opts que almacena un objeto el cúal dentro almacena dos claves que son jwtFromRequest, secretOrKey.
+                    8. Aqui tenemos una llave llamada jwtFromRequest que dentro guarda o llama la constante ExtractJwt y además usamos una funcion de la libreria que almacena jwtFromRequest
+                    que es .fromAuthHeaderAsBearerToken() que lo que hace es
+                    9. Aqui tenemos otra llave llamada secretOrKey que almacena la constante Keys y esta constante Keys almacena el archivo keys del cual usamos el secretOrKey que el archivo keys exporta.
+                    12. Llamamos la variable passport y usa una función que esta trae llamada "use()" que recibe como parametro un nuevo o crea un nuevo JwtStrategy que es otorgado por la función Strategy
+                    que importa de la libreria "passport-jwt", a esta funcion le pasamos unos parametros como el objeto opts y una funcion anonima que tiene dos parametros
+                    que son jwt_payload y done
+                    13. Aqui llamamos la constante User y usamos una función de esta llamada findById "Buscar por Id" a esta funcion le pasamos dos parametros que son 
+                    jwt_payload.id y una funcion anonima que tiene como parametros err y user
+                    14, 15. Aqui validamos si err tiene una valor truthy y si se cumple esa condición retornamos el parametro "done" pero dentro de este almacenamos el error y un valor
+                    falso
+                    17, 18. Aqui validamos si user tiene un valor truthy y si esto se cumple retornamos el parametro "done" y dentro de este almacenamos un valor null, y el parametro user
+                    20, 21. Aqui validamos que si no se cumple ninguna de las dos condiciones anteriores, entonces si no se cumplen retornamos "done" y dentro almacenamos un valor null , un valor falso
+                    26. Aqui exportamos nuestra constante passport.
                 |                                                                                                                                         |
                 └ --------------------------------------------------------------------------------------------------------------------------------------- ┘
 
@@ -1183,9 +1203,82 @@
                     ⦿  XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
 
                 |---------------------------------------------------------------------------------------------------------------------------------------- |
-                
-                    A.   XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
-                    B.   XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+                    1. Importamos el objeto User de el archivo user que esta dentro de los modelos y lo almacenamos en una constante llamada User
+                    2. Importamos la libreria bcrypt y la almacenamos en una constante llamada bcrypt
+                    3. Importamos la libreria jsonwebtoken y la almacenamos en una constante llamada jwt
+                    4. Importamos el objeto keys de el archivo keys que esta dentro de la carpeta config
+                    6. Digitamos que este archivo va a exportar todo lo que hay dentro de ese objeto
+                      ⦿  login(req, res) {
+                      8             const email = req.body.email;
+                      9             const password = req.body.password;
+                     10
+                     11             User.findByEmail(email, async (err, myUser) => {
+                     12                 if (err) {
+                     13                     return res.status(501).json({
+                     14                         success: false,
+                     15                         message: 'Error al consultar el usuario',
+                     16                         error: err
+                     17                     });
+                     18                 }
+                     19
+                     20                 if (!myUser) {
+                     21                     return res.status(401).json({
+                     22                         success: false,
+                     23                         message: 'El email no existe en la base de datos'
+                     24                     });
+                     25                 }
+                     26
+                     27                 const isPasswordValid = await bcrypt.compare(password, myUser.password);
+                     28
+                     29                 if (isPasswordValid) {
+                     30                     const token = jwt.sign(
+                     31                         { id: myUser.id, email: myUser.email, role: myUser.role },
+                     32                         keys.secretOrKey,
+                     33                         { expiresIn: '1h' }
+                     34                     );
+                     35
+                     36                     const data = {
+                     37                         id: myUser.id,
+                     38                         email: myUser.email,
+                     39                         name: myUser.name,
+                     40                         lastname: myUser.lastname,
+                     41                         image: myUser.image,
+                     42                         phone: myUser.phone,
+                     43                         role: myUser.role,
+                     44                         session_token: `JWT ${token}`
+                     45                     };
+                     46
+                     47                     return res.status(201).json({
+                     48                         success: true,
+                     49                         message: 'Usuario autenticado',
+                     50                         data: data
+                     51                     });
+                     52                 } else {
+                     53                     return res.status(401).json({
+                     54                         success: false,
+                     55                         message: 'Contraseña o correo incorrecto'
+                     56                     });
+                     57                 }
+                     58             });
+                     59         },
+                    7. Dentro del objeto creamos una nueva función llamada login que recibe dos parametros que son req "request" y res "response"
+                    8. Aqui creamos una nueva constante llamada email que almacena un valor que esta dentro del parametro req llamado email como una clave
+                    dentro de un objeto llamada email
+                    9. Aqui creamos una nueva constane llamada password que al igual que email esta dentro del parametro req con una clave llamada password
+                    11. Aqui llamamos la constante User y usamos una de sus funciones que es findByEmail "Buscar Por Correo" a la cual le pasamos como parametros
+                    la constante email y una funcion anonima que declaramos que es asincrona usando async lo que significa que va a tomar un tiempo 
+                    en completarse, también esta funcion anonima tiene unos parametros tales como err y myUser.
+                    12, 13. Aqui evaluamos si err tiene un valor truthy, y si es así entonces retornamos un valor al parametro res al cual le agregamos un valor dentro
+                    usando .status(501) para indicar si el estado de la funcion fue exitoso o no y tambien le pasamos un objeto dentro de este usando .json() y agregando 
+                    el objeto dentro.
+                    14.Dentro del objeto que esta dentro del .json({}) le agregamos unas clave llamada "status" indicando que su valor es false para indicar que el estado fue negativo
+                    15. Aqui agregamos otra clave llamada "message" que dentro almacena un texto que dice "Error al consultar el usuario"
+                    16. Y aqui decimos cúal fue el error que sucedio o porque no se pudo completar la acción.
+                    20. Aqui validamos si el usuario no existe usando "!" para indicar que no hay valor en ese parametro
+                    21. Entonces aqui retornamos el parametro res pero agregandole un status dentro en este caso 401 que indica que no existe ese dato que estamos pidiendo
+                    y le pasamos un objeto usando .json({}).
+                    22. Dentro del objeto le pasamos una clave llamada success que indica si fue exitosa la acción o no, en este caso no fue exitosa asi que dentro le damos un valor false.
+                    23. También le pasamos otra clave llamada message para indicarle el porque no se realizo la acción.
                 |                                                                                                                                         |
                 └ --------------------------------------------------------------------------------------------------------------------------------------- ┘
 
@@ -1369,8 +1462,8 @@
 
                 |---------------------------------------------------------------------------------------------------------------------------------------- |
                 
-                    A.   XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
-                    B.   XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.
+                    1. .
+                    2. .
                 |                                                                                                                                         |
                 └ --------------------------------------------------------------------------------------------------------------------------------------- ┘
 
