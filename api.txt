@@ -1208,63 +1208,65 @@
                     3. Importamos la libreria jsonwebtoken y la almacenamos en una constante llamada jwt
                     4. Importamos el objeto keys de el archivo keys que esta dentro de la carpeta config
                     6. Digitamos que este archivo va a exportar todo lo que hay dentro de ese objeto
-                      ⦿  login(req, res) {
-                      8             const email = req.body.email;
-                      9             const password = req.body.password;
-                     10
-                     11             User.findByEmail(email, async (err, myUser) => {
-                     12                 if (err) {
-                     13                     return res.status(501).json({
-                     14                         success: false,
-                     15                         message: 'Error al consultar el usuario',
-                     16                         error: err
-                     17                     });
-                     18                 }
-                     19
-                     20                 if (!myUser) {
-                     21                     return res.status(401).json({
-                     22                         success: false,
-                     23                         message: 'El email no existe en la base de datos'
-                     24                     });
-                     25                 }
-                     26
-                     27                 const isPasswordValid = await bcrypt.compare(password, myUser.password);
-                     28
-                     29                 if (isPasswordValid) {
-                     30                     const token = jwt.sign(
-                     31                         { id: myUser.id, email: myUser.email, role: myUser.role },
-                     32                         keys.secretOrKey,
-                     33                         { expiresIn: '1h' }
-                     34                     );
-                     35
-                     36                     const data = {
-                     37                         id: myUser.id,
-                     38                         email: myUser.email,
-                     39                         name: myUser.name,
-                     40                         lastname: myUser.lastname,
-                     41                         image: myUser.image,
-                     42                         phone: myUser.phone,
-                     43                         role: myUser.role,
-                     44                         session_token: `JWT ${token}`
-                     45                     };
-                     46
-                     47                     return res.status(201).json({
-                     48                         success: true,
-                     49                         message: 'Usuario autenticado',
-                     50                         data: data
-                     51                     });
-                     52                 } else {
-                     53                     return res.status(401).json({
-                     54                         success: false,
-                     55                         message: 'Contraseña o correo incorrecto'
-                     56                     });
-                     57                 }
-                     58             });
-                     59         },
+
+                    ⦿  login(req, res) {
+                            const email = req.body.email;
+                            const password = req.body.password;
+                
+                            User.findByEmail(email, async (err, myUser) => {
+                                if (err) {
+                                    return res.status(501).json({
+                                        success: false,
+                                        message: 'Error al consultar el usuario',
+                                        error: err
+                                    });
+                                }
+                
+                                if (!myUser) {
+                                    return res.status(401).json({
+                                        success: false,
+                                        message: 'El email no existe en la base de datos'
+                                    });
+                                }
+                
+                                const isPasswordValid = await bcrypt.compare(password, myUser.password);
+                
+                                if (isPasswordValid) {
+                                    const token = jwt.sign(
+                                        { id: myUser.id, email: myUser.email, role: myUser.role },
+                                        keys.secretOrKey,
+                                        { expiresIn: '1h' }
+                                    );
+                
+                                    const data = {
+                                        id: myUser.id,
+                                        email: myUser.email,
+                                        name: myUser.name,
+                                        lastname: myUser.lastname,
+                                        image: myUser.image,
+                                        phone: myUser.phone,
+                                        role: myUser.role,
+                                        session_token: `JWT ${token}`
+                                    };
+                
+                                    return res.status(201).json({
+                                        success: true,
+                                        message: 'Usuario autenticado',
+                                        data: data
+                                    });
+                                } else {
+                                    return res.status(401).json({
+                                        success: false,
+                                        message: 'Contraseña o correo incorrecto'
+                                    });
+                                }
+                            });
+                        },
+
                     7. Dentro del objeto creamos una nueva función llamada login que recibe dos parametros que son req "request" y res "response"
                     8. Aqui creamos una nueva constante llamada email que almacena un valor que esta dentro del parametro req llamado email como una clave
                     dentro de un objeto llamada email
-                    9. Aqui creamos una nueva constane llamada password que al igual que email esta dentro del parametro req con una clave llamada password
+                    9. Aqui creamos una nueva constante llamada password que al igual que email esta dentro del parametro req con una clave llamada password
                     11. Aqui llamamos la constante User y usamos una de sus funciones que es findByEmail "Buscar Por Correo" a la cual le pasamos como parametros
                     la constante email y una funcion anonima que declaramos que es asincrona usando async lo que significa que va a tomar un tiempo 
                     en completarse, también esta funcion anonima tiene unos parametros tales como err y myUser.
@@ -1279,6 +1281,105 @@
                     y le pasamos un objeto usando .json({}).
                     22. Dentro del objeto le pasamos una clave llamada success que indica si fue exitosa la acción o no, en este caso no fue exitosa asi que dentro le damos un valor false.
                     23. También le pasamos otra clave llamada message para indicarle el porque no se realizo la acción.
+                    27. Aqui creamos una nueva constante llamada isPasswordValid la cual almacena una acción que tomara un tiempo en resolverse para indicar que tomara un tiempo usamos el
+                    await y ahora llamamos la constante o la libreria bcrypt y usamos una funcion de esta llamada .compare() que recibe como parametros la contraseña que le pasamos y tambien un llave del objeto o parametro myUser llamada password.
+                    29. Ahora validamos si la constante isPasswordValid y su funcion dentro tienen un valor truthy.
+                    30. Aqui creamos una nueva constante llamada token que dentro almacena la libreria o la constante jwt y además usamos una función de esta llamada .sign()
+                    31. Dentro de la función sign le pasamos un objeto como parametro el cual dentro contiene una llave id: que llama o almacena un dato traido del objeto myUser como lo es myUser.id
+                    , otra llave llamada email que contiene la llave email del objeto myUser, otra llave llamada role que contiene la llave role del objeto myUser.
+                    32. Dentro de la función sign tambien le pasamos otro paremetro que seria la llave secretOrKey que esta dentro del objeto keys
+                    33. Dentro de la función sign le pasamos un ultimo parametro que sería un objeto que contiene una llave llamada expiresIn "Expira en" y le damos un valor de 1 hora
+                    esto sirve para indicar el tiempo que tiene el jsonwebtoken del usuario para expirar.
+                    36. Aqui creamos un nuevo objeto llamado data que dentro almacena 8 llaves
+                    37. Dentro de data tenemos una llave llamada id que almacena el valor de la llave llamada id que esta dentro del objeto myUser.
+                    38. Dentro de data tenemos una llave llamada email que almacena el valor de la llave llamada email que esta dentro del objeto myUser.
+                    39. Dentro de data tenemos una llave llamada name que almacena el valor de la llave llamada name que esta dentro del objeto myUser
+                    40. Dentro de data tenemos una llave llamada lastname que almacena el valor de la llave llamada id que esta dentro del objeto myUser
+                    41. Dentro de data tenemos una llave llamada image que almacena el valor de la llave llamada image que esta dentro del objeto myUser
+                    42. Dentro de data tenemos una llave llamada phone que almacena el valor de la llave llamada phone que esta dentro del objeto myUser
+                    43. Dentro de data tenemos una llave llamada role que almacena el valor de la llave llamada role que esta dentro del objeto myUser
+                    44. Dentro de data tenemos una llave llamada session_token que almacena el resultado o el valor de la constante token que creamos anteriormente.
+                    47. Aqui establecemos un return, dentro de este establecemos que al parametro res le agregaremos un estado con un valor 201 que sería exitoso y usamos la funcion .json()
+                    a la cúal le pasamos como parametro un objeto
+                    48. Dentro de ese objeto pasamos una llave llamada success que indica si fue exitosa la acción en este caso le damos un valor true para complementar que si fue exitosa la acción.
+                    49. También le pasamos otra llave llamada message que dentro almacena un texto que dice 'Usuario autenticado'
+                    50. También le pasamos otra llave llamada data que almacena dentro el objeto data que creamos antes el cúal nos muestra toda la información del usuario que acaba de loguearse.
+                    52. Aqui decimos que si el isPasswordValid no tiene un valor entonces vamos a devolver algo para notificar eso.
+                    53. Aqui establecemos que vamos a retornar, entonces retornariamos el parametro res pero asignandole un estado 401 con la funcion .status() que indica que la acción no fue exitosa, y también le agregamos más valores
+                    con la funcion .json() la cual dentro almacena un objeto.
+                    54.Dentro del objeto que esta dentro del .json({}) le agregamos unas clave llamada "success" indicando que su valor es false para indicar que el estado fue negativo.
+                    55. Dentro del objeto que esta dentro del .json({}) le agregamos unas clave llamada "message" que dentro almacena un texto que dice 'Contraseña o correo incorrecto'.
+                    
+                    ⦿  getAllUsers(req, res) {
+                            User.findAll((err, users) => {
+                                if (err) {
+                                    return res.status(501).json({
+                                        success: false,
+                                        message: 'Error al listar usuarios',
+                                        error: err
+                                    });
+                                }
+                                return res.status(200).json({
+                                    success: true,
+                                    message: 'Lista de usuarios',
+                                    data: users
+                                });
+                            });
+                        },
+                    61. Aqui creamos una nueva funcion llamada getAllUsers "obtener todos los usuarios" la cual recibe dos parametros que son req "Request" y res "Response".
+                    62. Aqui llamamos el objeto User y usamos un función de este mismo llamada findAll "Buscar Todos" la cual recibe como parametro una función anonima que tiene recibe dos parametros que son err y users.
+                    63. Dentro de la funcion tenemos un condicional if el cual valida si el parametro err tiene un valor truthy
+                    64. Si ese condicional se cumple entonces en esta línea retornamos el parametro res al que le agregamos un estado 501 el cúal indica que no se pudo lograr la acción, además le agregamos otra función
+                    llamada .json() la cual dentro almacena un objeto
+                    65. Aqui creamos una llave llamada success que dentro almacena un valor false
+                    66. Aqui creamos una llave llamada message que dentro almacena un texto "'Error al listar usuarios'"
+                    67. Aqui creamos una llave llamada error que dentro almacena el parametro err
+                    70. Aqui vamos a retornar el parametro res pero aplicandole un estado con la funcion .status(), dandole un estado 200 que sería que la acción se realizo exitosamente y ademas tambien le damos mas valore
+                    usando la funcion .json() que dentro almacena un objeto
+                    71. Dentro del objeto de la función .json() creamos una nueva llave llamada success que dentro almacena un valor true indicando que si fue exitosa la acción
+                    72. Dentro del objeto de la función .json() creamos una nueva llave llamada message que dentro almacena un texto "'Lista de usuarios'"
+                    73. Dentro del objeto de la función .json() creamos una nueva llave llamada data que dentro almacena el parametro users.
+                    
+                    ⦿  getUserById(req, res) {
+                            const id = req.params.id;
+                            User.findById(id, (err, user) => {
+                                if (err) {
+                                    return res.status(501).json({
+                                        success: false,
+                                        message: 'Error al consultar el usuario',
+                                        error: err
+                                    });
+                                }
+                                if (!user) {
+                                    return res.status(404).json({
+                                        success: false,
+                                        message: 'Usuario no encontrado'
+                                    });
+                                }
+                                return res.status(200).json({
+                                    success: true,
+                                    message: 'Usuario encontrado',
+                                    data: user
+                                });
+                            });
+                        },
+
+                    78. Aqui creamos una nueva función llamada getUserById "obtener usuario por el id" la cúal recibe dos parametros que son req "Request" y res "Response"
+                    79. Aqui creamos una nueva constante llamada id que dentro almacena el parametro req
+                    80.
+                    81.
+                    82.
+                    83.
+                    84.
+                    85.
+                    88.
+                    89.
+                    90.
+                    91.
+                    94.
+                    95.
+                    96.
+                    97.
                 |                                                                                                                                         |
                 └ --------------------------------------------------------------------------------------------------------------------------------------- ┘
 
